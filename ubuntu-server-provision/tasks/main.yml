@@ -1,0 +1,53 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for prov_conf
+- name: Create a new VM from a base image
+  nutanix.ncp.ntnx_vms:
+    prism_central_hostname: "{{ pc_ip_address }}"
+    prism_central_username: "{{ pc_user }}"
+    prism_central_password: "{{ pc_password }}"
+    prism_central_validate_certs: false
+    name: "{{ vm_name }}"
+    state: "present"
+    cluster: "{{ cluster_name }}"
+    memory_mb: "{{ vm_memory_mb }}"
+    vcpu_count: 2
+    cores_per_vcpu: 2
+    disks:
+      - clone_from_image: "{{ image_name }}"
+        bootable: true
+    nics:
+      - network: "{{ network_name }}"
+    
+    guest_customization:
+      cloud_init:
+        user_data: |
+          #cloud-config
+          password: "{{ pc_password }}"
+          chpasswd: { expire: False }
+          ssh_pwauth: True
+          user: "{{ guest_user }}"
+  register: new_vm_info
+
+- name: Extract the VM's IP address
+  set_fact:
+    vm_ip: "{{ new_vm_info.vms[0].ip_addresses[0] }}"
+
+- name: Display the new VM IP address
+  debug:
+    msg: "{{ vm_name }} created with IP: {{ vm_ip }}"
+
+- name: Wait for SSH to become available on the new VM
+  wait_for:
+    host: "{{ vm_ip }}"
+    port: 22
+    delay: 15
+    timeout: 300
+    state: started
+- name: Add the new VM to an in-memory inventory group
+  add_host:
+    name: "{{ vm_ip }}"
+    groups: newly_created_vms
+    ansible_user: "{{ guest_user }}"
+    ansible_password: "{{ pc_password }}" 
+ 

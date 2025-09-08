@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for prov_conf
+prism_central_address: "{{pc_ip_address}}"
+vm_name: "ansible-vm-1"
+vm_memory_mb: 4096
+cluster_name: "PHX-POC309" 
+image_name: "ubuntu-server24.03"
+network_name: "aux-1" # Must match network name in Prism Central
+guest_user: "ayush"

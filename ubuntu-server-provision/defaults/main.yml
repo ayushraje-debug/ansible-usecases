@@ -1,0 +1,4 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for prov_conf
+pc_ip_address: "10.38.81.7"
