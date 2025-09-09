@@ -2,14 +2,15 @@
   hosts: localhost
   gather_facts: no
   vars_files:
-    - ~/ansible-usecases/credentials.yml
+    - /home/ayush/ansible-usecases/credentials.yml
   roles:
-    - ubuntu-server-provision
+    - ubuntu_server_provision
 
 - name: 2. Configure the New VM
-  hosts: newly_created_vms # Target the group created in the previous play
-  become: yes
-  gather_facts: yes # We need facts for the guest OS
+  hosts: newly_created_vms 
+  become: true
+  vars_files:
+    - ~/ansible-usecases/credentials.yml
   roles:
     - server-config
 

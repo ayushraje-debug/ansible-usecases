@@ -1,0 +1,7 @@
+- hosts: localhost
+  gather_facts: no
+  vars_files:
+    - /home/ayush/ansible-usecases/credentials.yml
+  tasks:
+    - debug:
+        msg: "PC User is {{ pc_user }} and PE User is {{ pe_user }}"

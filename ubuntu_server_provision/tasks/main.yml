@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: MIT-0
+---
+# tasks file for prov_conf
+
+- name: Create a new VM from a base image
+  nutanix.ncp.ntnx_vms:
+    nutanix_host: "{{ pc_ip_address }}"
+    nutanix_username: "{{ pc_user }}"
+    nutanix_password: "{{ pc_password }}"
+    validate_certs: false
+    name: "{{ vm_name }}"
+    state: "present"
+    cluster: 
+      name: "{{ cluster_name }}"
+    memory_gb: "{{ vm_memory_gb }}"
+    vcpus: 2
+    cores_per_vcpu: 2
+    disks:
+      - clone_image: 
+          name: "{{ image_name }}"
+        type: DISK
+        bus: SCSI
+   
+    networks:
+      - is_connected: true
+        subnet:
+          name: "{{ network_name }}"
+  
+  register: new_vm_info
+
+- name: Extract the VM's IP address
+  set_fact:
+    vm_ip: "{{new_vm_info.response.spec.resources.nic_list[0].ip_endpoint_list[0].ip}}"
+
+- name: Display the new VM IP address
+  debug:
+    msg: "{{ vm_name }} created with IP: {{ vm_ip }}"
+
+- name: Wait for SSH to become available on the new VM
+  wait_for:
+   host: "{{ vm_ip }}"
+   port: 22
+   delay: 15
+   timeout: 300
+   state: started
+
+- name: Add the new VM to an in-memory inventory group
+  add_host:
+    name: "{{ vm_ip }}"
+    groups: newly_created_vms
+    ansible_user: "{{ guest_user }}"
+    ansible_password: nutanix/4u

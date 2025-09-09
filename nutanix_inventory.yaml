@@ -1,0 +1,7 @@
+plugin: nutanix.ncp.ntnx_prism_vm_inventory
+nutanix_host: "10.38.81.7"
+nutanix_username: "{{ pc_user }}"
+nutanix_password: "{{ pc_password }}"
+validate_certs: false
+
+

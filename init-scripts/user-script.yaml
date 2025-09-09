@@ -1,0 +1,11 @@
+#cloud-config
+users:
+  - name: ayush
+    groups: sudo
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    lock_passwd: false
+    passwd: $6$4guEcDvX$HBHMFKXp4x/Eutj0OW5JGC6f1toudbYs.q.WkvXGbUxUTzNcHawKRRwrPehIxSXHVc70jFOp3yb8yZgjGUuET.
+    ssh_authorized_keys: 
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMIA3AGaDt1MTzWoWq5g4Za+BLfBwt5FRC6nhQjDLEx1
+
+final_message: Ubunt Machine setup successfully!
